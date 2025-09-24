@@ -1,0 +1,39 @@
+/* CSS file for Searchable Product Table Example */
+
+body {
+  background-color: lightblue;
+}
+
+h1 {
+  color: white;
+  text-align: center;
+}
+
+p {
+  font-family: verdana;
+  font-size: 20px;
+}
+
+.App {
+  color: black;
+}
+
+.Category {
+  color: black;
+  font-size: 30px;
+  text-align: center;
+}
+
+.Product_In_Stock {
+  color: green;
+  text-align: center;
+}
+
+.Product_Not_In_Stock {
+  color: red;
+  text-align: center;
+}
+
+.Check_Box_Text {
+  font-style: italic;
+}
