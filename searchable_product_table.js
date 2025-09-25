@@ -3,7 +3,7 @@
 // Takes input JSON structure containing product information
 // - each entry looks like {category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football"}
 // UI features to allow the user to filter what is displayed
-// - search bar by product name
+// - search bar to filter by product name
 // - check box to filter for only products in stock
 
 // Product Row component
@@ -15,7 +15,9 @@ function ProductRow (product) {
     <li
       key={product.id}
       className={product.stocked ? 'Product_In_Stock' : 'Product_Not_In_Stock'}
-    >{product.name} {product.price}</li>
+    >
+    {product.name} {product.price}
+    </li>
   );
 }
 
@@ -69,8 +71,7 @@ function ProductTable(props) {
   const uniqueCategories = [];
   props.list_of_products.map(product => {
     if (uniqueCategories.indexOf(product.category) === -1) {
-        uniqueCategories.push(product.category)
-    }});
+        uniqueCategories.push(product.category)}});
 
   // Create an array that forms the table content
   let productTableContent = [];
@@ -94,6 +95,64 @@ function ProductTable(props) {
   );
 }
 
+// Text Box component
+// - receives textual user input
+// - displays props "text" if not empty, otherwise "placeholder"
+// - calls parent function "onTextBoxChange" when the user enters text
+
+class TextBox extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  handleInputChange(e) {
+    this.props.onTextBoxChange(e.target.value);
+  }
+
+  render() {
+    return (
+      <form>
+        <input
+          type="text"
+          value={this.props.text}
+          placeholder={this.props.placeholder}
+          onChange={this.handleInputChange} />
+      </form>
+    );
+  }
+}
+
+// Check Box component
+// - receives on/off user input
+// - displays box as checked if props "box_checked" is true
+// - calls parent function "onCheckBoxChange" when the user clicks the box
+
+class CheckBox extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  handleInputChange(e) {
+    this.props.onCheckBoxChange(e.target.checked);
+  }
+
+  render() {
+    return (
+      <label className="Check_Box_Text">
+        <input
+          type="checkbox"
+          checked={this.props.box_checked}
+          onChange={this.handleInputChange} />
+        {this.props.label}
+      </label>
+    );
+  }
+}
+
 // Search Bar component
 // - receives all user input
 
@@ -106,13 +165,14 @@ class SearchBar extends React.Component {
   render() {
     return (
       <div>
-        <form>
-          <input type="text" value={this.props.filter_text} placeholder="Search..." />
-        </form>
-        <label className="Check_Box_Text">
-          <input type="checkbox" checked={this.props.in_stock_only} />
-          Only show products in stock
-        </label>
+        <TextBox
+          text={this.props.filterText}
+          placeholder="Search..."
+          onTextBoxChange={this.props.onFilterTextChange} />
+        <CheckBox
+          box_checked={this.props.inStockOnly}
+          label="Only show products in stock"
+          onCheckBoxChange={this.props.onInStockOnlyChange} />
       </div>
     );
   }
@@ -122,18 +182,33 @@ class SearchBar extends React.Component {
 // - contains the entirety of the example
 
 class FilterableProductTable extends React.Component {
+
   constructor(props) {
     super(props);
     // State variables to hold the user input
-    this.state = {filterText: 'Nexus 7', inStockOnly: false};
+    this.state = {filterText: '', inStockOnly: false};
+    // Handler for filter text change
+    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+    // Handler for in stock only flag change
+    this.handleInStockOnlyChange = this.handleInStockOnlyChange.bind(this);
+  }
+
+  handleFilterTextChange(filterText) {
+    this.setState({filterText: filterText, inStockOnly: this.state.inStockOnly});
+  }
+
+  handleInStockOnlyChange(inStockOnly) {
+    this.setState({filterText: this.state.filterText, inStockOnly: inStockOnly});
   }
 
   render() {
     return (
       <div>
         <SearchBar
-          filter_text={this.state.filterText}
-          in_stock_only={this.state.inStockOnly} />
+          filterText={this.state.filterText}
+          inStockOnly={this.state.inStockOnly}
+          onFilterTextChange={this.handleFilterTextChange}
+          onInStockOnlyChange={this.handleInStockOnlyChange} />
         <ProductTable
           list_of_products={this.props.list_of_products}
           filter_text={this.state.filterText}
