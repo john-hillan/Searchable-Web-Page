@@ -98,14 +98,19 @@ function ProductTable(props) {
 // - receives all user input
 
 class SearchBar extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
       <div>
         <form>
-          <input type="text" placeholder="Search..." />
+          <input type="text" value={this.props.filter_text} placeholder="Search..." />
         </form>
         <label className="Check_Box_Text">
-          <input type="checkbox" />
+          <input type="checkbox" checked={this.props.in_stock_only} />
           Only show products in stock
         </label>
       </div>
@@ -120,7 +125,7 @@ class FilterableProductTable extends React.Component {
   constructor(props) {
     super(props);
     // State variables to hold the user input
-    this.state = {filterText: '', inStockOnly: true};
+    this.state = {filterText: 'Nexus 7', inStockOnly: false};
   }
 
   render() {
