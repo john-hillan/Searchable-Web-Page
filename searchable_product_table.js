@@ -100,6 +100,8 @@ class SearchBar extends React.Component {
 class FilterableProductTable extends React.Component {
   constructor(props) {
     super(props);
+    // State variables to hold the user input
+    this.state = {search_text: '', show_only_in_stock: false};
   }
 
   render() {
