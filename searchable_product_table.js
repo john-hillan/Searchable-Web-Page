@@ -31,6 +31,22 @@ function ProductCategoryRow(category) {
 
 function ProductTable(props) {
 
+  // Function to determine whether to display a given product based on user input
+
+  function displayThisProduct (product, filter_text, in_stock_only) {
+    // Default is to display every item
+    let display_this_product = true;
+    // If the user has supplied filter text only display the product if the name matches
+    if (filter_text) {
+      display_this_product &= (product.name == filter_text);
+    }
+    // If the user has selected in stock only display the product if the stocked flag is set
+    if (in_stock_only) {
+      display_this_product &= product.stocked;
+    }
+    return (display_this_product);
+  }
+
   // Function to create a list of all products in a given category
 
   function createListOfProducts(list_of_products, category) {  
@@ -39,8 +55,11 @@ function ProductTable(props) {
     for (let i = 0; i < list_of_products.length; i++) {
       const product = list_of_products[i];
       if (product.category === category) {
-        const productRow = ProductRow (product);
-        listOfProductRows.push (productRow);
+        const display_this_product = displayThisProduct (product, props.filter_text, props.in_stock_only);
+        if (display_this_product) {
+          const productRow = ProductRow (product);
+          listOfProductRows.push (productRow);
+        }
       }
     }
     return (listOfProductRows);
@@ -101,14 +120,19 @@ class FilterableProductTable extends React.Component {
   constructor(props) {
     super(props);
     // State variables to hold the user input
-    this.state = {search_text: '', show_only_in_stock: false};
+    this.state = {filterText: '', inStockOnly: true};
   }
 
   render() {
     return (
       <div>
-        <SearchBar />
-        <ProductTable list_of_products={this.props.list_of_products} />
+        <SearchBar
+          filter_text={this.state.filterText}
+          in_stock_only={this.state.inStockOnly} />
+        <ProductTable
+          list_of_products={this.props.list_of_products}
+          filter_text={this.state.filterText}
+          in_stock_only={this.state.inStockOnly} />
       </div>
     );
   }
